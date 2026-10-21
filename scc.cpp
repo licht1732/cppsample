@@ -31,13 +31,14 @@ int main() {
         if (!visited[i]) dfs(dfs, i);
     }
 
-    vector<int> tmp(n,-1);
+    //トポロジカル順の番号を付ける
+    vector<int> toponum(n,-1);
     int cnt=0;
 
     auto dfs2 = [&](auto&& dfs2,int idx) -> void {
-        tmp[idx]=cnt;
+        toponum[idx]=cnt;
         for (int nxt : rg[idx]) {
-            if (tmp[nxt]!=-1) continue;
+            if (toponum[nxt]!=-1) continue;
             dfs2(dfs2,nxt);
         }
     };
@@ -46,18 +47,19 @@ int main() {
         int idx=s.top();
         s.pop();
 
-        if (tmp[idx]==-1) {
+        if (toponum[idx]==-1) {
             dfs2(dfs2,idx);
             cnt++;
         }
     }
 
+    //縮尺グラフ作成
     vector<set<int>> ng(cnt);
 
     for (int i=0;i<n;i++){
         for (int x : g[i]) {
-            if (tmp[i]==tmp[x]) continue;
-            ng[tmp[i]].insert(tmp[x]);
+            if (toponum[i]==toponum[x]) continue;
+            ng[toponum[i]].insert(toponum[x]);
         }
     }
 }
